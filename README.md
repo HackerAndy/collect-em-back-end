@@ -41,13 +41,13 @@ note: windows is a bit tricky, due to path issues. The python.org python install
 
 Due to differences between various operating systems, the preferred way of invoking CLI packages like pipenv will be different. Here are some ways to invoke pipenv in different OSes:
 
-### 🍎 {pipenv_cmd}
+### 🍎 Mac {pipenv_cmd}
 
 If you used `brew` to install pipenv, you can just invoke pipenv as below:
 
 `pipenv <args>`
 
-### 🐧 {pipenv_cmd}
+### 🐧 Linux {pipenv_cmd}
 
 `pipenv` might be on your path, but if you installed it into one of your `pyenv` environments, you'll need to invoke it as below:
 

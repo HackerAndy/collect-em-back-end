@@ -1,15 +1,17 @@
 [[source]]
-name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-
-[dev-packages]
-pytest = "*"
+name = "pypi"
 
 [packages]
-Flask = "==1.*"
-flask_restful = "*"
+flask = "*"
+flask-cors = "*"
+bson = "*"
+pymongo = "*"
 flasgger = "*"
+flask-pymongo = "*"
+
+[dev-packages]
 
 [requires]
 python_version = "3.9"
