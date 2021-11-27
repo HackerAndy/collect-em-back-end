@@ -92,7 +92,7 @@ The `pipenv install` command (👆) will install the specified package / package
 
 Run the flask app:
 
-```flask run``` or ```python app.py```
+```flask run``` or ```python3 run.py```
 
 # Run tests
 

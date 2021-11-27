@@ -12,3 +12,4 @@ if __name__ == "__main__":
     app.config['MONGO_URI'] = config['TEST']['MONGO_URI']
 
     app.run()
+    
