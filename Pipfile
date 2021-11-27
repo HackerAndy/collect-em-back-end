@@ -10,6 +10,7 @@ bson = "*"
 pymongo = "*"
 flasgger = "*"
 flask-pymongo = "*"
+pytz = "*"
 
 [dev-packages]
 

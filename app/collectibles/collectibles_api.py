@@ -183,5 +183,5 @@ def api_update_item(itemId):
         description: Updating an existing item
     """
     data = request.json    
-    update_a_collectible(itemId, data)
-    return data
+    new_record, _ = update_a_collectible(itemId, data)
+    return new_record

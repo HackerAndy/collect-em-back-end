@@ -3,6 +3,8 @@ from flask_pymongo import PyMongo
 from werkzeug.local import LocalProxy
 import os
 from bson.objectid import ObjectId
+from datetime import datetime
+import pytz
 
 def get_db():
     """
@@ -50,6 +52,7 @@ def delete_an_item(item_id):
         return exception
 
 def insert_a_collectible(data):
+    data["lastModified"] = datetime.now(pytz.UTC)
     db.myCollectibles.insert_one(data)
 
 def update_a_collectible(item_id, data):
@@ -62,6 +65,7 @@ def update_a_collectible(item_id, data):
     update_query["$currentDate"] = {"lastModified":True}
 
     db.myCollectibles.update_one(find_query, update_query)
+    return find_by_item_id(find_query)
 
 if __name__ == "__main__":
   print(os.path.basename(__file__))
