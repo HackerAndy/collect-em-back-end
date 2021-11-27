@@ -118,16 +118,26 @@ Your running app's swagger JSON doc is served on endpoint:
 
 ```/api-docs```
 
-# Commit and push your code
-In order to push your code to PCF, Open the terminal in your IDE and use the Git commands. If you do not have git installed, you can find it [here](https://git-scm.com/downloads).
-1. Type ```git add -p``` to review changes and accept or reject each. Alternatively, you could choose to use ```git add .``` to add all changes without review.
-2. Once your changes have been reviewed, type ```git commit -m "Some message about what code you changed"```
-3. Type ```git pull``` to grab the latest code from your Github repository
-4. Type ```git push``` to deploy your code to PCF
-5. To check the status or progress of your build, navigate to the DCS Shared pipeline by going [here](https://dcs-jenkins-sandbox.apps.pd01.edc.caas.ford.com/job/Sandbox/) and locating your team folder. 
-6. To check your app on PCF, log in to https://login.sys.pp01.edc1.cf.ford.com/login, select the space and look for the app you deployed. The route(URL) will be will be listed in the last column next to your app name.
+### Generate code from this swagger
 
-# Contact Us
-Need to notify us of a bug, have issues, new feature request or simply want to brag? Join the /d/c/s Community Channels!
-- [Dev/Central/Station Slack](https://app.slack.com/client/T5V3ZFCD6/C9L83E6DQ)
-- [Dev/Central/Station Webex Teams](https://www.webexteams.ford.com/space?r=fz8y)
+https://swagger.io/tools/swagger-codegen/
+
+which takes you here:
+https://github.com/swagger-api/swagger-codegen
+
+
+# Database
+
+## Pre-load the data
+
+A file `mongodb_data.json` contains test data that can be loaded into the mongo database
+
+To insert test data into the mongo db:  
+```shell
+python3 preload-data.py insert
+```
+
+To delete the test data (from the `mongodb_data.json` file):  
+```shell
+python3 preload-data.py delete
+```

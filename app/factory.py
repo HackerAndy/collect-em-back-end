@@ -25,7 +25,7 @@ def create_app():
       "basePath": "/api",
       "host": "127.0.0.1:5000",
       "info": {
-        "title": "project",
+        "title": "Gotta collect ‘em all",
         "description": "Project developed by Pickachu",
         "version": "1.0.0",
         "contact": {
