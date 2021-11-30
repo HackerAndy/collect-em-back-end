@@ -101,3 +101,7 @@ The included testing framework is pytest and the dev dependencies will need to b
     ```shell
     python3 run.py
     ```
+
+1. Test out the functionality!  
+[http://127.0.0.1:5000/swagger-ui](http://127.0.0.1:5000/swagger-ui)  
+
