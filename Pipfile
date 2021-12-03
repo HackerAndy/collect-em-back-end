@@ -11,6 +11,11 @@ pymongo = "*"
 flasgger = "*"
 flask-pymongo = "*"
 pytz = "*"
+streamlit = "*"
+paginator = "*"
+watchdog = "*"
+django-pagination = "*"
+django = "*"
 
 [dev-packages]
 
