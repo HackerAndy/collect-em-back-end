@@ -1,3 +1,6 @@
 pip install streamlit
+pip install django
+pip install django-pagination
+pip install watchdog
 run line below from terminal:
-streamlit run .\pokelit.py
+streamlit run pokelit.py
