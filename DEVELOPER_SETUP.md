@@ -38,19 +38,19 @@
     cd cis-553-python
     ```
 
-1. Install application dependencies  
-    Install all the python dependencies used in this project via pipenv. Before running the following command, change your current directory to the root directory of this project (from performing the first step above).  
-
+1. Start the python virtual environment 
     ```shell
-    pipenv install
+    pipenv shell
     ```
 
     > NOTE: The actual`{pipenv_cmd}` used above might depend on your OS / pipenv installation.  
     > NOTE: To install new packages via pipenv, replace the normal pip3 command with pipenv. i.e. `pipenv install numpy`
 
-1. Start the python virtual environment 
+1. Install application dependencies  
+    Install all the python dependencies used in this project via pipenv. Before running the following command, change your current directory to the root directory of this project (from performing the first step above).  
+
     ```shell
-    pipenv shell
+    pipenv install
     ```
 
 1. **Pre-load test data into the MongoDB database**
@@ -64,27 +64,6 @@
     > NOTE: All data stored in the DB will be automatically saved when shutting down the MongoDB instance.
 
 
-## Running application tests
-The included testing framework is pytest and the dev dependencies will need to be installed, in order to use it.
-
-1. Start the python virtual environment 
-    ```shell
-    pipenv shell
-    ```
-
-1. Install the dev dependencies by executing the following command:
-
-    ```shell
-    pipenv install --dev
-    ```
-
-1. Run the tests with this command:
-
-    ```shell
-    pytest
-    ```
-
-
 ## Running the app Locally
 1. Start the MongoDB instance:  
     For Mac:  
@@ -92,7 +71,7 @@ The included testing framework is pytest and the dev dependencies will need to b
     brew services start mongodb-community@5.0
     ```
 
-1. Start the python virtual environment:  
+1. Start the python virtual environment (if not already started):  
     ```shell
     pipenv shell
     ```
