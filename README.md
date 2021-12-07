@@ -19,10 +19,29 @@ Since this is a 'backend' application, its usage is limited to REST API calls. T
 However, an easier way to test out the functionality is provide by a built-in component called Swagger, described below.
 
 
-### Swagger API Documentation and Testing for this project  
+### Swagger API Documentation  
+
+**Live API testing for this project**
 
 Once the app is running, an url is reserverd to test out the API calls this app accepts. [http://127.0.0.1:5000/swagger-ui](http://127.0.0.1:5000/swagger-ui)  
 
 ![Swagger Example](/_images/swagger-example.jpg)
 
->Instructions to generate client API code from this swagger implementation can be found here:  https://github.com/swagger-api/swagger-codegen
+**Generating Code from swagger**
+Instructions to generate client API code from this swagger implementation can be found here:  https://github.com/swagger-api/swagger-codegen
+
+**Generating UML diagrams from swagger**
+1. Download the json swagger specifications. 
+  * The specifications can be found here: http://127.0.0.1:5000/api-docs
+    > A version has been saved in this repository under `api-docs.json`
+2. Run the swagger-to-uml application
+    > NOTE: It is assumed [Application Setup](/DEVELOPER_SETUP.md#application-setup) has been done
+  * execute the following command line:
+    ```sh
+    python3 swagger_to_uml/bin/swagger_to_uml api-docs.json api-docs.puml
+    ```
+    > This will output on the screen the code necessary for the next step
+3. Navigate to https://plantuml.com
+  * Click on the `server` link on the left menu of the main site
+  * Copy / paste the contents of the previous step and execute!
+    > A prior execution of this has bee saved as the file [api-docs-uml.png](api-docs-uml.png) in this project.

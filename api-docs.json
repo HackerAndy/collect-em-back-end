@@ -1,0 +1,172 @@
+{
+  "basePath": "/api", 
+  "definitions": {
+    "Item": {
+      "properties": {
+        "__any_field__": {
+          "description": "Identify any field that needs updating", 
+          "type": "string"
+        }, 
+        "itemName": {
+          "description": "Name of item.", 
+          "type": "string"
+        }, 
+        "owner_id": {
+          "description": "The owner of an item", 
+          "type": "string"
+        }, 
+        "quantity": {
+          "description": "How many of this item?", 
+          "type": "string"
+        }
+      }, 
+      "required": [
+        "ownerId", 
+        "itemName"
+      ], 
+      "type": "object"
+    }
+  }, 
+  "host": "127.0.0.1:5000", 
+  "info": {
+    "contact": {
+      "email": "docdrew@umich.edu", 
+      "name": "docdrew"
+    }, 
+    "description": "Project developed by Pickachu", 
+    "title": "Gotta collect \u2018em all", 
+    "version": "1.0.0"
+  }, 
+  "paths": {
+    "/v1/collection/": {
+      "get": {
+        "description": "Retreive items of a personal collection", 
+        "parameters": [
+          {
+            "default": "Ash", 
+            "description": "The owner of a collection.", 
+            "in": "query", 
+            "name": "Owner", 
+            "required": true, 
+            "type": "string"
+          }, 
+          {
+            "default": 20, 
+            "description": "Number of records to be returned per page", 
+            "in": "query", 
+            "name": "results_per_page", 
+            "required": true, 
+            "type": "string"
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "A list of items in your collection"
+          }
+        }, 
+        "summary": "A list of items in a persons collection.", 
+        "tags": [
+          "Collection"
+        ]
+      }
+    }, 
+    "/v1/item/": {
+      "post": {
+        "parameters": [
+          {
+            "in": "body", 
+            "name": "item details", 
+            "required": true, 
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          }
+        ], 
+        "responses": {
+          "201": {
+            "description": "A list of items in your collection"
+          }
+        }, 
+        "summary": "Add a new item to a collection", 
+        "tags": [
+          "Collection Item"
+        ]
+      }
+    }, 
+    "/v1/item/{itemId}": {
+      "patch": {
+        "parameters": [
+          {
+            "description": "Database Id of the individual item", 
+            "in": "path", 
+            "name": "itemId", 
+            "required": true, 
+            "type": "string"
+          }, 
+          {
+            "in": "body", 
+            "name": "item details", 
+            "required": true, 
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "Updating an existing item"
+          }
+        }, 
+        "summary": "Update an existing items in a collection", 
+        "tags": [
+          "Collection Item"
+        ]
+      }
+    }, 
+    "/v1/item_id/{itemId}": {
+      "delete": {
+        "description": "Delete an item from a personal collection given a specific item id", 
+        "parameters": [
+          {
+            "description": "Database Id of the individual item", 
+            "in": "path", 
+            "name": "itemId", 
+            "required": true, 
+            "type": "string"
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "Delete Sucessfull"
+          }
+        }, 
+        "summary": "Delete a specific item from a collection.", 
+        "tags": [
+          "Collection Item"
+        ]
+      }, 
+      "get": {
+        "description": "Retreive an item from a personal collection given a specific item id", 
+        "parameters": [
+          {
+            "description": "Database Id of the individual item", 
+            "in": "path", 
+            "name": "itemId", 
+            "required": true, 
+            "type": "string"
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "Query Sucessfull"
+          }
+        }, 
+        "summary": "Retrieve a specific item from a collection.", 
+        "tags": [
+          "Collection Item"
+        ]
+      }
+    }
+  }, 
+  "swagger": "2.0"
+}

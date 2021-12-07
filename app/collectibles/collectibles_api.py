@@ -101,6 +101,7 @@ def api_add_item():
         required: true
         schema:
           id: Item
+          type: object
           required:
             - ownerId
             - itemName
@@ -165,6 +166,7 @@ def api_update_item(itemId):
         required: true
         schema:
           id: Item
+          type: object
           properties:
             owner_id:
               type: string
