@@ -52,6 +52,14 @@ def delete_an_item(item_id):
     except Exception as exception:
         return exception
 
+def delete_an_item_by_object(data):
+    try:
+        collectible = db.myCollectibles.find(data)
+        db.myCollectibles.delete_one(data)
+        return list(collectible)
+    except Exception as exception:
+        return exception
+
 def insert_a_collectible(data):
     data["lastModified"] = datetime.now(pytz.UTC)
     db.myCollectibles.insert_one(data)
