@@ -1,7 +1,7 @@
 import os
 import configparser
 from app.factory import create_app
-
+import streamlit
 config = configparser.ConfigParser()
 app_configuration = os.path.abspath(os.path.join("application.ini"))
 config.read(os.path.abspath(app_configuration))

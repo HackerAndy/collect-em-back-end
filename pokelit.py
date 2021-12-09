@@ -1,6 +1,7 @@
 import streamlit as st
 import requests as req
 import json
+import requests
 from PIL import Image
 import requests
 from io import BytesIO
@@ -9,13 +10,32 @@ from streamlit.type_util import Key
 from pagination import paginator
 from datetime import date
 import base64
+from pymongo import MongoClient
+import json
+import os
+from datetime import datetime
+import pytz
+import sys
+
 st.set_page_config(layout="wide")
-f = open('pokemon.json')
-pokedata = json.load(f)
-f.close()
+MONGO_URI = "mongodb://127.0.0.1:27017/BasementOfHolding?retryWrites=true&w=majority"
 
+client = MongoClient(MONGO_URI)
+db = client.get_default_database()  
 
+url = "http://127.0.0.1:5000/api/v1/item/"
+headers = {"accept": "application/json",
+    "Content-Type": "application/json"}
 
+def list_db_items(collection):
+    cursor = collection.find({})
+    for document in cursor:
+        st.markdown("""---""")
+        cols = st.columns(3)
+        cols[0].write(document['ownerId'])
+        cols[1].write(document['itemName'])
+        cols[2].write(document['quantity'])
+        
 LOGO_IMAGE = "pokeball.jpg"
 
 st.markdown(
@@ -49,11 +69,11 @@ st.markdown(
 )
 
 header = st.container() 
-dataset= st.container()
+
 features = st.container()
 model_training= st.container()
-col1, col2, col3  = st.columns(3)
-flight_list=st.container()
+dataset= st.container()
+
 
 # st.write("a logo and text next to eachother")
 # col21, mid, col22 = st.beta_columns([1,1,20])
@@ -64,82 +84,88 @@ flight_list=st.container()
 
 with header: 
     st.title('Welcome to the Catch them all!')
-    st.text('Please enter your pokemon info:')
+    # st.text('Please enter your pokemon info:')
+option = st.selectbox(
+     'What would you like to do?',
+     ('List Cards', 'Add/Update Card', 'Delete Card'))
     
-with dataset:
-    st.text_input(
-            "Add Deck")
-    st.header('Pokemon Info:')
+# with dataset:
+#     st.header('Card Info:')
+#     with col1:
+#         d1 = st.text_input(
+#             "Deck")
+#     with col2:
+#         d2 = st.text_input(
+#             "Card Name")
+
+#     with col3:
+#         d3 = st.text_input(
+#             "Quantity")
+
+# option = st.selectbox(
+#      'What would you like to do?',
+#      ('List Cards', 'Add/Update Card', 'Delete Card'))
+
+if option== 'Add/Update Card' or option=='Delete Card':
+    st.header('Card Info:')
+    col1, col2, col3  = st.columns(3)
+    
     with col1:
-        d2 = st.text_input(
-            "Name")
+        d1 = st.text_input(
+            "User")
     with col2:
         d2 = st.text_input(
-            "Add Type")
+            "Card Name")
+    if option== 'Add/Update Card':
+        with col3:
+            d3 = st.number_input(
+                "Quantity", step=1)
 
-    with col3:
-        d3 = st.text_input(
-            "Add Amount")
+if st.button('Submit'):
+    if option== 'List Cards':
+        list_db_items(db.myCollectibles)
+    elif option =="Add/Update Card":
+        if db.myCollectibles.find_one({
+            'ownerId':d1,
+            'itemName':d2
+            }) ==None:
+                db.myCollectibles.insert_one({
+                    'ownerId':d1,
+                    'itemName':d2,
+                    'quantity': d3
+                }) 
 
-    # with col3:
-    #     d3 = st.text_input(
-    #         "To",
-    #         value="Anywhere")
-            
-    # with col4:
-    #     d4 = st.text_input(
-    #         "To",
-    #         value="Anywhere")
+        else:
+            db.myCollectibles.update_one({
+                    'ownerId':d1,
+                        'itemName':d2,
+                    },{
+                    '$set': {
+                        'quantity': d3
+                    }
+                    }, upsert=False)
+        st.write("Added " , d3," ",d2, " to ", d1)
+    else:
+        test_item={'ownerId': d1,
+        'itemName': }
+        post_request = requests.post(url, json = test_item, headers = headers)
+        # db.myCollectibles.delete_one({
+        #     'ownerId':d1,
+        #     'itemName':d2,
+        # })
+        # st.write("Deleted " ," ",d2, " from ", d1)
+                
+                
 
-if st.button('Add'):
-    st.write('Searching')
-# url = pokedata[24]['image']+'/low'
-# response = requests.get(url)
-# img = Image.open(BytesIO(response.content))
 
-# def local_css(file_name):
-#     with open(file_name) as f:
-#         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-# def remote_css(url):
-#     st.markdown(f'<link href="{url}" rel="stylesheet">', unsafe_allow_html=True)    
 
-# def icon(icon_name):
-#     st.markdown(f'<i class="material-icons">{icon_name}</i>', unsafe_allow_html=True)
-
-# local_css("style.css")
-# remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
-
-# icon("search")
-# selected = st.text_input("", "Search...")
-# button_clicked = st.button("OK")
-
-# pokelist=[]
-# for i in range(10):
-#     if "image" in pokedata[20+i]:
-#         image_url= pokedata[20+i]['image']
-#         response = requests.get(image_url)
-#         pokelist.append(Image.open(BytesIO(response.content)))
-#     else:
-#         pass
-
-# st.image(pokelist)
-# image_iterator = paginator("Select a sunset page", pokelist)
-# indices_on_page, images_on_page = map(list, zip(*image_iterator))
-# st.image(images_on_page, width=100, caption=indices_on_page)
-# for i in range(pokelist):
-#         st.markdown("""---""")
-#         cols = st.columns(3)
-#         # cols[0].write(pokedata[20+i]['name'])
-#         cols[0].write(st.image(img),Key=i)
-        # cols[0].write(st.checkbox('I agree'),   Key=i)
-# st.write(url)
-# st.image(img)
-# if st.button(st.image(img)):
-#     st.write('Its Lit')
-# img = Image.open("local-filename.jpg")
-# st.button(st.image(img))
-# st.image(
-#     url,
-#     # width=400, # Manually Adjust the width of the image as per requirement
-# )
+# with coll1:
+#     if st.button('Add'):
+#         st.write('Searching')
+# # with coll2:
+# if st.button('List Cards'):
+#     list_db_items(db.myCollectibles)
+# with coll3:
+#     if st.button('Delete Card'):
+#         st.write('Searching')

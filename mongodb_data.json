@@ -12,10 +12,10 @@
   "quantity": 4
 },{
   "itemName": "Dragapult",
-  "owner_id": "Ash",
+  "ownerId": "Ash",
   "quantity": 1
 },{
   "itemName": "Grimmsnarl",
-  "owner_id": "Ash",
-  "quantity": 3
+  "ownerId": "Ash",
+  "quantity": 4
 }]

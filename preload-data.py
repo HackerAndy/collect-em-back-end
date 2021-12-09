@@ -22,6 +22,7 @@ def insert_many(query):
         query_with_timestamp = collectible
         query_with_timestamp['lastModified'] = datetime.now(pytz.UTC)
 
+
     db.myCollectibles.insert_many(query)
 
 def delete_many(query):
