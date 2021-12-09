@@ -76,5 +76,18 @@ def update_a_collectible(item_id, data):
     db.myCollectibles.update_one(find_query, update_query)
     return find_by_item_id(find_query)
 
+def update_a_collectible_by_name(data):
+    item_owner = data.get("ownerId")
+    item_name = data.get("itemName")
+    find_query = {"ownerId":item_owner, "itemName":item_name}
+    data.pop("ownerId")
+    data.pop("itemName")
+    update_query = {}
+    update_query["$set"] = data
+    print(find_query)
+    if db.myCollectibles.find_one(find_query) == None:
+        db.myCollectibles.insert_one(find_query)
+    db.myCollectibles.update_one(find_query, update_query)
+
 if __name__ == "__main__":
   print(os.path.basename(__file__))
