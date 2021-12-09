@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_cors import CORS
 from app.collectibles.collectibles_db import find_by_owner, insert_a_collectible, \
-    find_by_item_id, delete_an_item, update_a_collectible, delete_an_item_by_object
+    find_by_item_id, delete_an_item, update_a_collectible, delete_an_item_by_object, \
+    update_a_collectible_by_name
 from flasgger import Swagger, swag_from
 
 # Var name of blueprint must match the prefex of this python file name
@@ -182,6 +183,32 @@ def api_delete_item_by_name():
     delete_an_item_by_object(data)
     return data
 
+
+@collectibles_api_v1.route('/item/update', methods=['PATCH'])
+def api_update_item_by_name():
+    """ Update an item in a collection
+    ---
+    tags:
+      - Collection Item
+    parameters:
+      - name: item details
+        in: body
+        required: true
+        schema:
+          id: Item
+          type: object
+          required:
+            - ownerId
+            - itemName
+    responses:
+      200:
+        description: Successful Update
+    """
+    data = request.json    
+    print("Incomming Data",data)
+    update_a_collectible_by_name(data)
+    return data
+
 @collectibles_api_v1.route('/item/<string:itemId>', methods=['PATCH'])
 def api_update_item(itemId):
     """ Update an existing items in a collection
@@ -201,7 +228,7 @@ def api_update_item(itemId):
           id: Item
           type: object
           properties:
-            owner_id:
+            ownerId:
               type: string
               description: The owner of an item                
             itemName:

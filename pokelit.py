@@ -138,7 +138,7 @@ if st.button('Submit'):
         else:
             db.myCollectibles.update_one({
                     'ownerId':d1,
-                        'itemName':d2,
+                    'itemName':d2,
                     },{
                     '$set': {
                         'quantity': d3
