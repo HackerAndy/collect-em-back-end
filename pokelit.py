@@ -18,14 +18,6 @@ import pytz
 import sys
 
 st.set_page_config(layout="wide")
-MONGO_URI = "mongodb://127.0.0.1:27017/BasementOfHolding?retryWrites=true&w=majority"
-
-client = MongoClient(MONGO_URI)
-db = client.get_default_database()  
-
-url = "http://127.0.0.1:5000/api/v1/item/"
-headers = {"accept": "application/json",
-    "Content-Type": "application/json"}
 
 def list_db_items(collection):
     for document in collection['response_body']:
@@ -80,25 +72,25 @@ option = st.selectbox(
      'What would you like to do?',
      ('---Choose an Option---', 'List Items', 'Add Item','Update Item', 'Delete Item'))
     
-def delete_by_item_name(test_item):
+def delete_by_item_name(item):
     url = "http://127.0.0.1:5000/api/v1/item/delete"
     headers = {"accept": "application/json", 
     "Content-Type": "application/json"}
-    post_request = requests.delete(url, json = test_item, headers = headers)  
+    post_request = requests.delete(url, json = item, headers = headers)  
     return post_request
 
-def add_new_item(test_item):
+def add_new_item(item):
     url = "http://127.0.0.1:5000/api/v1/item/"
     headers = {"accept": "application/json", 
     "Content-Type": "application/json"}
-    post_request = requests.post(url, json = test_item, headers = headers)  
+    post_request = requests.post(url, json = item, headers = headers)  
     return post_request
 
-def update_item_by_name(test_item):
+def update_item_by_name(item):
     url = "http://127.0.0.1:5000/api/v1/item/update"
     headers = {"accept": "application/json", 
     "Content-Type": "application/json"}
-    post_request = requests.patch(url, json = test_item, headers = headers)  
+    post_request = requests.patch(url, json = item, headers = headers)  
     return post_request
 
 def collection_from_get_request(user):
@@ -131,20 +123,20 @@ if option != '---Choose an Option---' and st.button('Submit'):
     if option== 'List Items':
         list_db_items(collection_from_get_request(user_name_input))
     elif option =="Add Item":
-        test_item={'ownerId': d1,
+        item={'ownerId': d1,
         'itemName': d2,
         'quantity': d3}
-        add_new_item(test_item)
+        add_new_item(item)
         st.write("Item: ", d2, "added for: ",d1,"!" )
     elif option =="Update Item":
-        test_item={'ownerId': d1,
+        item={'ownerId': d1,
         'itemName': d2,
         'quantity': d3}
-        update_item_by_name(test_item)
+        update_item_by_name(item)
         st.write("Item", d2, "updated in to: ", str(d3), "in ",d1,"!" )
     else:
-        test_item={'ownerId': d1,
+        item={'ownerId': d1,
         'itemName': d2}
-        delete_by_item_name(test_item)
-        # post_request = requests.delete(url, json = test_item, headers = headers)
+        delete_by_item_name(item)
+        # post_request = requests.delete(url, json = item, headers = headers)
         st.write("Item: ", d2, "deleted for: ",d1,"!"  )
