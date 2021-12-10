@@ -73,38 +73,13 @@ features = st.container()
 model_training= st.container()
 dataset= st.container()
 
-
-# st.write("a logo and text next to eachother")
-# col21, mid, col22 = st.beta_columns([1,1,20])
-# with col21:
-#     st.image('pokeball.jpg', width=60)
-# with col22:
-#     st.write('A Name')
-
 with header: 
     st.title('Welcome to the Catch them all!')
     # st.text('Please enter your pokemon info:')
 option = st.selectbox(
      'What would you like to do?',
-     ('List Cards', 'Add Card','Update Card', 'Delete Card'))
+     ('---Choose an Option---', 'List Items', 'Add Item','Update Item', 'Delete Item'))
     
-# with dataset:
-#     st.header('Card Info:')
-#     with col1:
-#         d1 = st.text_input(
-#             "Deck")
-#     with col2:
-#         d2 = st.text_input(
-#             "Card Name")
-
-#     with col3:
-#         d3 = st.text_input(
-#             "Quantity")
-
-# option = st.selectbox(
-#      'What would you like to do?',
-#      ('List Cards', 'Add/Update Card', 'Delete Card'))
-
 def delete_by_item_name(test_item):
     url = "http://127.0.0.1:5000/api/v1/item/delete"
     headers = {"accept": "application/json", 
@@ -126,17 +101,19 @@ def update_item_by_name(test_item):
     post_request = requests.patch(url, json = test_item, headers = headers)  
     return post_request
 
-def collection_from_get_request():
+def collection_from_get_request(user):
     url = "http://127.0.0.1:5000/api/v1/collection/"
-    payload = {"Owner":"Ash","results_per_page":20}
+    payload = {"Owner":user,"results_per_page":20}
     headers = {"accept": "application/json"}
     get_request_with_owner = requests.get(url, payload, headers = headers)
     json_response = get_request_with_owner.json()
     return json_response
 
+if option == 'List Items':
+    user_name_input = st.text_input("User")
 
-if option== 'Add Card' or option=='Delete Card' or option=='Update Card':
-    st.header('Card Info:')
+if option== 'Add Item' or option=='Delete Item' or option=='Update Item':
+    st.header('Item Info:')
     col1, col2, col3  = st.columns(3)
     
     with col1:
@@ -144,30 +121,30 @@ if option== 'Add Card' or option=='Delete Card' or option=='Update Card':
             "User")
     with col2:
         d2 = st.text_input(
-            "Card Name")
-    if option== 'Add Card' or option=='Update Card':
+            "Item Name")
+    if option== 'Add Item' or option=='Update Item':
         with col3:
             d3 = st.number_input(
                 "Quantity", step=1)
 
-if st.button('Submit'):
-    if option== 'List Cards':
-        list_db_items(collection_from_get_request())
-    elif option =="Add Card":
+if option != '---Choose an Option---' and st.button('Submit'):
+    if option== 'List Items':
+        list_db_items(collection_from_get_request(user_name_input))
+    elif option =="Add Item":
         test_item={'ownerId': d1,
         'itemName': d2,
         'quantity': d3}
         add_new_item(test_item)
-        st.write("Card", d2, "added in ",d1,"!" )
-    elif option =="Update Card":
+        st.write("Item: ", d2, "added for: ",d1,"!" )
+    elif option =="Update Item":
         test_item={'ownerId': d1,
         'itemName': d2,
         'quantity': d3}
         update_item_by_name(test_item)
-        st.write("Card", d2, "updated in to", str(d3), "in ",d1,"!" )
+        st.write("Item", d2, "updated in to: ", str(d3), "in ",d1,"!" )
     else:
         test_item={'ownerId': d1,
         'itemName': d2}
         delete_by_item_name(test_item)
         # post_request = requests.delete(url, json = test_item, headers = headers)
-        st.write("Card", d2, "deleted in",d1,"!"  )
+        st.write("Item: ", d2, "deleted for: ",d1,"!"  )
