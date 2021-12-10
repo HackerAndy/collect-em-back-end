@@ -28,8 +28,7 @@ headers = {"accept": "application/json",
     "Content-Type": "application/json"}
 
 def list_db_items(collection):
-    cursor = collection.find({})
-    for document in cursor:
+    for document in collection['response_body']:
         st.markdown("""---""")
         cols = st.columns(3)
         cols[0].write(document['ownerId'])
@@ -87,7 +86,7 @@ with header:
     # st.text('Please enter your pokemon info:')
 option = st.selectbox(
      'What would you like to do?',
-     ('List Cards', 'Add/Update Card', 'Delete Card'))
+     ('List Cards', 'Add Card','Update Card', 'Delete Card'))
     
 # with dataset:
 #     st.header('Card Info:')
@@ -106,7 +105,37 @@ option = st.selectbox(
 #      'What would you like to do?',
 #      ('List Cards', 'Add/Update Card', 'Delete Card'))
 
-if option== 'Add/Update Card' or option=='Delete Card':
+def delete_by_item_name(test_item):
+    url = "http://127.0.0.1:5000/api/v1/item/delete"
+    headers = {"accept": "application/json", 
+    "Content-Type": "application/json"}
+    post_request = requests.delete(url, json = test_item, headers = headers)  
+    return post_request
+
+def add_new_item(test_item):
+    url = "http://127.0.0.1:5000/api/v1/item/"
+    headers = {"accept": "application/json", 
+    "Content-Type": "application/json"}
+    post_request = requests.post(url, json = test_item, headers = headers)  
+    return post_request
+
+def update_item_by_name(test_item):
+    url = "http://127.0.0.1:5000/api/v1/item/update"
+    headers = {"accept": "application/json", 
+    "Content-Type": "application/json"}
+    post_request = requests.patch(url, json = test_item, headers = headers)  
+    return post_request
+
+def collection_from_get_request():
+    url = "http://127.0.0.1:5000/api/v1/collection/"
+    payload = {"Owner":"Ash","results_per_page":20}
+    headers = {"accept": "application/json"}
+    get_request_with_owner = requests.get(url, payload, headers = headers)
+    json_response = get_request_with_owner.json()
+    return json_response
+
+
+if option== 'Add Card' or option=='Delete Card' or option=='Update Card':
     st.header('Card Info:')
     col1, col2, col3  = st.columns(3)
     
@@ -116,56 +145,29 @@ if option== 'Add/Update Card' or option=='Delete Card':
     with col2:
         d2 = st.text_input(
             "Card Name")
-    if option== 'Add/Update Card':
+    if option== 'Add Card' or option=='Update Card':
         with col3:
             d3 = st.number_input(
                 "Quantity", step=1)
 
 if st.button('Submit'):
     if option== 'List Cards':
-        list_db_items(db.myCollectibles)
-    elif option =="Add/Update Card":
-        if db.myCollectibles.find_one({
-            'ownerId':d1,
-            'itemName':d2
-            }) ==None:
-                db.myCollectibles.insert_one({
-                    'ownerId':d1,
-                    'itemName':d2,
-                    'quantity': d3
-                }) 
-
-        else:
-            db.myCollectibles.update_one({
-                    'ownerId':d1,
-                    'itemName':d2,
-                    },{
-                    '$set': {
-                        'quantity': d3
-                    }
-                    }, upsert=False)
-        st.write("Added " , d3," ",d2, " to ", d1)
+        list_db_items(collection_from_get_request())
+    elif option =="Add Card":
+        test_item={'ownerId': d1,
+        'itemName': d2,
+        'quantity': d3}
+        add_new_item(test_item)
+        st.write("Card", d2, "added in ",d1,"!" )
+    elif option =="Update Card":
+        test_item={'ownerId': d1,
+        'itemName': d2,
+        'quantity': d3}
+        update_item_by_name(test_item)
+        st.write("Card", d2, "updated in to", str(d3), "in ",d1,"!" )
     else:
         test_item={'ownerId': d1,
-        'itemName': }
-        post_request = requests.post(url, json = test_item, headers = headers)
-        # db.myCollectibles.delete_one({
-        #     'ownerId':d1,
-        #     'itemName':d2,
-        # })
-        # st.write("Deleted " ," ",d2, " from ", d1)
-                
-                
-
-
-
-
-# with coll1:
-#     if st.button('Add'):
-#         st.write('Searching')
-# # with coll2:
-# if st.button('List Cards'):
-#     list_db_items(db.myCollectibles)
-# with coll3:
-#     if st.button('Delete Card'):
-#         st.write('Searching')
+        'itemName': d2}
+        delete_by_item_name(test_item)
+        # post_request = requests.delete(url, json = test_item, headers = headers)
+        st.write("Card", d2, "deleted in",d1,"!"  )
