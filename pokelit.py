@@ -10,7 +10,6 @@ from streamlit.type_util import Key
 from pagination import paginator
 from datetime import date
 import base64
-from pymongo import MongoClient
 import json
 import os
 from datetime import datetime
@@ -19,13 +18,20 @@ import sys
 
 st.set_page_config(layout="wide")
 
-def list_db_items(collection):
-    for document in collection['response_body']:
-        st.markdown("""---""")
-        cols = st.columns(3)
-        cols[0].write(document['ownerId'])
-        cols[1].write(document['itemName'])
-        cols[2].write(document['quantity'])
+def list_db_items(json_response):
+    # Cleans the data to be displayed in the table
+    # Removing items that we don't wish to be displayed
+    displayable_collection_data = []
+    for item in json_response["response_body"]:
+        item_details = {}
+        for key , value in item.items():
+            if key == "_id" or key == "lastModified":
+                continue
+            else:
+                item_details[key] = value
+        displayable_collection_data.append(item_details)
+    return displayable_collection_data
+
         
 LOGO_IMAGE = "pokeball.jpg"
 
@@ -72,25 +78,25 @@ option = st.selectbox(
      'What would you like to do?',
      ('---Choose an Option---', 'List Items', 'Add Item','Update Item', 'Delete Item'))
     
-def delete_by_item_name(item):
+def delete_by_item_name(test_item):
     url = "http://127.0.0.1:5000/api/v1/item/delete"
     headers = {"accept": "application/json", 
     "Content-Type": "application/json"}
-    post_request = requests.delete(url, json = item, headers = headers)  
+    post_request = requests.delete(url, json = test_item, headers = headers)  
     return post_request
 
-def add_new_item(item):
+def add_new_item(test_item):
     url = "http://127.0.0.1:5000/api/v1/item/"
     headers = {"accept": "application/json", 
     "Content-Type": "application/json"}
-    post_request = requests.post(url, json = item, headers = headers)  
+    post_request = requests.post(url, json = test_item, headers = headers)  
     return post_request
 
-def update_item_by_name(item):
+def update_item_by_name(test_item):
     url = "http://127.0.0.1:5000/api/v1/item/update"
     headers = {"accept": "application/json", 
     "Content-Type": "application/json"}
-    post_request = requests.patch(url, json = item, headers = headers)  
+    post_request = requests.patch(url, json = test_item, headers = headers)  
     return post_request
 
 def collection_from_get_request(user):
@@ -106,37 +112,43 @@ if option == 'List Items':
 
 if option== 'Add Item' or option=='Delete Item' or option=='Update Item':
     st.header('Item Info:')
-    col1, col2, col3  = st.columns(3)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
-        d1 = st.text_input(
-            "User")
+        user_name_input = st.text_input("User")
     with col2:
-        d2 = st.text_input(
-            "Item Name")
+        item_name_input = st.text_input("Item Name")
     if option== 'Add Item' or option=='Update Item':
         with col3:
-            d3 = st.number_input(
-                "Quantity", step=1)
+            quantity_input = st.number_input("Quantity", step=1)
+    if option == 'Add Item':
+        col4, col5 = st.columns(2)
+        with col4:
+            new_field_name = st.text_input("New Field Name")
+        with col5:
+            new_field_value = st.text_input("New Field Value")
 
-if option != '---Choose an Option---' and st.button('Submit'):
+if option != '---Choose an Option---' and st.button('Submit') :
     if option== 'List Items':
-        list_db_items(collection_from_get_request(user_name_input))
+        collection_json = list_db_items(collection_from_get_request(user_name_input))
+        st.dataframe(collection_json)
     elif option =="Add Item":
-        item={'ownerId': d1,
-        'itemName': d2,
-        'quantity': d3}
-        add_new_item(item)
-        st.write("Item: ", d2, "added for: ",d1,"!" )
+        test_item={'ownerId': user_name_input,
+        'itemName': item_name_input,
+        'quantity': quantity_input,
+        new_field_name: new_field_value}
+        add_new_item(test_item)
+        st.write("Added Item: ", item_name_input, "for: ",user_name_input,"!" )
     elif option =="Update Item":
-        item={'ownerId': d1,
-        'itemName': d2,
-        'quantity': d3}
-        update_item_by_name(item)
-        st.write("Item", d2, "updated in to: ", str(d3), "in ",d1,"!" )
+        test_item={'ownerId': user_name_input,
+        'itemName': item_name_input,
+        'quantity': quantity_input}
+        update_item_by_name(test_item)
+        st.write("Updated Item", item_name_input, " to new quantity: ", 
+        str(quantity_input), "for ",user_name_input,"!" )
     else:
-        item={'ownerId': d1,
-        'itemName': d2}
-        delete_by_item_name(item)
-        # post_request = requests.delete(url, json = item, headers = headers)
-        st.write("Item: ", d2, "deleted for: ",d1,"!"  )
+        test_item={'ownerId': user_name_input,
+        'itemName': item_name_input}
+        delete_by_item_name(test_item)
+        # post_request = requests.delete(url, json = test_item, headers = headers)
+        st.write("Deleted Item: ", item_name_input, "for: ",user_name_input,"!"  )
